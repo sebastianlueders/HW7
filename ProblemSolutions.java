@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   SEBASTIAN LUEDERS / 002
  *
  *   This java file contains the problem solutions for the methods selectionSort,
  *   mergeSortDivisibleByKFirst, asteroidsDestroyed, and numRescueCanoes methods.
@@ -8,6 +8,7 @@
  ********************************************************************/
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class ProblemSolutions {
 
@@ -38,9 +39,36 @@ public class ProblemSolutions {
 
         for (int i = 0; i < n - 1; i++) {
 
-            // YOU CODE GOES HERE -- COMPLETE THE INNER LOOP OF THIS
-            // "SELECTION SORT" ALGORITHM.
-            // DO NOT FORGET TO ADD YOUR NAME / SECTION ABOVE
+
+
+            if(ascending) {
+                int min = values[i];
+                int minIndex = i;
+                for(int j = i + 1; j < n; j++) {
+                    if (values[j] < min) {
+                        min = values[j];
+                        minIndex = j;
+                    }
+                }
+                int toSwap = values[i];
+                values[i] = min;
+                values[minIndex] = toSwap;
+
+            } else {
+
+                int max = values[i];
+                int maxIndex = i;
+                for(int j = i + 1; j < n; j++) {
+                    if (values[j] > max) {
+                        max = values[j];
+                        maxIndex = j;
+                    }
+                }
+                int toSwap = values[i];
+                values[i] = max;
+                values[maxIndex] = toSwap;
+
+            }
 
         }
 
@@ -73,6 +101,8 @@ public class ProblemSolutions {
         if (values.length <= 1)  return;
 
         mergeSortDivisibleByKFirst(values, k, 0, values.length-1);
+
+
     }
 
     private void mergeSortDivisibleByKFirst(int[] values, int k, int left, int right) {
@@ -92,17 +122,50 @@ public class ProblemSolutions {
 
     private void mergeDivisbleByKFirst(int arr[], int k, int left, int mid, int right)
     {
-        // YOUR CODE GOES HERE, THIS METHOD IS NO MORE THAN THE STANDARD MERGE PORTION
-        // OF A MERGESORT, EXCEPT THE NUMBERS DIVISIBLE BY K MUST GO FIRST WITHIN THE
-        // SEQUENCE PER THE DISCUSSION IN THE PROLOGUE ABOVE.
-        //
-        // NOTE: YOU CAN PROGRAM THIS WITH A SPACE COMPLEXITY OF O(1) OR O(N LOG N).
-        // AGAIN, THIS IS REFERRING TO SPACE COMPLEXITY. O(1) IS IN-PLACE, O(N LOG N)
-        // ALLOCATES AUXILIARY DATA STRUCTURES (TEMPORARY ARRAYS). IT WILL BE EASIER
-        // TO CODE WITH A SPACE COMPLEXITY OF O(N LOG N), WHICH IS FINE FOR PURPOSES
-        // OF THIS PROGRAMMING EXERCISES.
+       int lSize = mid - left + 1;
+       int rSize = right - mid;
 
-        return;
+        int[] leftSide = new int[lSize];
+        int[] rightSide = new int[rSize];
+
+        for(int i = 0; i < lSize; i++) {
+            leftSide[i] = arr[i + left];
+        }
+
+        for(int j = 0; j < rSize; j++) {
+            rightSide[j] = arr[mid + 1 + j];
+        }
+
+        int i = 0;
+        int j = 0;
+        int currIndex = left;
+
+        while(i < lSize && j < rSize) {
+            boolean leftDiv = leftSide[i] % k == 0;
+            boolean rightDiv = rightSide[j] % k == 0;
+
+            if(leftDiv) {
+                arr[currIndex++] = leftSide[i++];
+            } else if(rightDiv) {
+                arr[currIndex++] = rightSide[j++];
+            } else {
+                if(leftSide[i] <= rightSide[j]) {
+                    arr[currIndex++] = leftSide[i++];
+                } else {
+                    arr[currIndex++] = rightSide[j++];
+                }
+            } 
+            
+        }
+
+        while(i < lSize) {
+            arr[currIndex++] = leftSide[i++];
+        }
+
+        while(j < rSize) {
+            arr[currIndex++] = rightSide[j++];
+        }
+
 
     }
 
@@ -154,9 +217,19 @@ public class ProblemSolutions {
 
     public static boolean asteroidsDestroyed(int mass, int[] asteroids) {
 
-        // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT()
+        boolean survived = true;
 
-        return false;
+        Arrays.sort(asteroids);
+
+        for(int i = 0; i < asteroids.length; i++) {
+            if(mass >= asteroids[i]) {
+                mass += asteroids[i];
+            } else {
+                survived = false;
+                break;
+            }
+        }
+        return survived;
 
     }
 
@@ -192,10 +265,21 @@ public class ProblemSolutions {
 
     public static int numRescueSleds(int[] people, int limit) {
 
-        // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
+        int heaviest = people.length - 1;
+        int lightest = 0;
+        int numSleds = 0;
 
-        return -1;
+        Arrays.sort(people);
 
+        while(heaviest >= lightest) {
+            if(people[heaviest] + people[lightest] <= limit) {
+                lightest++;
+            } 
+            heaviest--;
+            numSleds++;
+        }
+
+        return numSleds;
     }
 
 } // End Class ProblemSolutions
